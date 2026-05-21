@@ -10,7 +10,10 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 import { toast } from "sonner";
 import { ChevronLeft, ChevronRight, Plus, Filter, Settings, Sparkles, RefreshCw } from "lucide-react";
+<<<<<<< HEAD
 import { CreateAppointmentDialog } from "@/components/create-appointment-dialog";
+=======
+>>>>>>> fd3cddaeb332227e318c1d182f3efe004b89ff35
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const dates = ["19", "20", "21", "22", "23", "24", "25"];
@@ -43,7 +46,10 @@ const events: Record<string, any[]> = {
 export default function CalendarPage() {
   const [view, setView] = useState("Week");
   const [showInsights, setShowInsights] = useState(true);
+<<<<<<< HEAD
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+=======
+>>>>>>> fd3cddaeb332227e318c1d182f3efe004b89ff35
 
   const { data } = useQuery({
     queryKey: ["calendar"],
@@ -77,7 +83,11 @@ export default function CalendarPage() {
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" className="h-8 text-xs"><Filter className="w-3.5 h-3.5" />Filters</Button>
             <Button variant="ghost" size="sm" className="h-8 text-xs"><Settings className="w-3.5 h-3.5" /></Button>
+<<<<<<< HEAD
             <Button size="sm" className="h-8 text-xs" onClick={() => setShowCreateDialog(true)}><Plus className="w-3.5 h-3.5" />Create Appointment</Button>
+=======
+            <Button size="sm" className="h-8 text-xs"><Plus className="w-3.5 h-3.5" />Create Appointment</Button>
+>>>>>>> fd3cddaeb332227e318c1d182f3efe004b89ff35
           </div>
         </div>
 
@@ -224,13 +234,21 @@ export default function CalendarPage() {
               <CardHeader><CardTitle className="text-sm">Quick Actions</CardTitle></CardHeader>
               <CardContent className="grid grid-cols-2 gap-2">
                 {[
+<<<<<<< HEAD
                   { label: "Add Appointment", icon: Plus, action: () => setShowCreateDialog(true) },
+=======
+                  { label: "Add Appointment", icon: Plus },
+>>>>>>> fd3cddaeb332227e318c1d182f3efe004b89ff35
                   { label: "Add Block", icon: ChevronLeft },
                   { label: "Add Break", icon: ChevronRight },
                   { label: "Appointment Types", icon: Settings },
                   { label: "Calendar Settings", icon: Settings },
                 ].map((a) => (
+<<<<<<< HEAD
                   <button key={a.label} onClick={() => (a.action ? a.action() : toast.info(a.label))}
+=======
+                  <button key={a.label} onClick={() => toast.info(a.label)}
+>>>>>>> fd3cddaeb332227e318c1d182f3efe004b89ff35
                     className="flex flex-col items-center gap-1.5 p-2.5 rounded-lg bg-[#1e2d40] hover:bg-[#2a3547] transition-colors">
                     <div className="w-7 h-7 rounded-lg bg-[#0d1a2d] flex items-center justify-center">
                       <a.icon className="w-3.5 h-3.5 text-blue-400" />
@@ -266,11 +284,14 @@ export default function CalendarPage() {
           </div>
         </div>
       </div>
+<<<<<<< HEAD
 
       <CreateAppointmentDialog
         open={showCreateDialog}
         onOpenChange={setShowCreateDialog}
       />
+=======
+>>>>>>> fd3cddaeb332227e318c1d182f3efe004b89ff35
     </div>
   );
 }

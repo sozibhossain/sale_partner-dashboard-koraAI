@@ -54,6 +54,7 @@ export const supportApi = {
   close: (id: string) => api.patch(`/support/${id}/close`),
 };
 
+<<<<<<< HEAD
 export const servicesApi = {
   getAll: (params?: object) => api.get("/services", { params }),
   getById: (id: string) => api.get(`/services/${id}`),
@@ -62,6 +63,8 @@ export const servicesApi = {
   delete: (id: string) => api.delete(`/services/${id}`),
 };
 
+=======
+>>>>>>> fd3cddaeb332227e318c1d182f3efe004b89ff35
 export const calendarApi = {
   getEvents: (params?: object) => api.get("/calendar", { params }),
   getInsights: () => api.get("/calendar/insights"),
@@ -71,6 +74,7 @@ export const calendarApi = {
   deleteEvent: (id: string) => api.delete(`/calendar/${id}`),
 };
 
+<<<<<<< HEAD
 export const appointmentsApi = {
   getAll: (params?: object) => api.get("/appointments", { params }),
   getById: (id: string) => api.get(`/appointments/${id}`),
@@ -84,6 +88,8 @@ export const employeesApi = {
   getAll: (params?: object) => api.get("/appointments/employees", { params }),
 };
 
+=======
+>>>>>>> fd3cddaeb332227e318c1d182f3efe004b89ff35
 export const inboxApi = {
   getChats: (params?: object) => api.get("/inbox", { params }),
   getChatById: (chatId: string) => api.get(`/inbox/${chatId}`),
