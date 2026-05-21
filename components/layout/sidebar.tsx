@@ -6,7 +6,7 @@ import { cn, getInitials } from "@/lib/utils";
 import {
   LayoutDashboard, Sparkles, Calendar, Mail, Users, Target,
   Zap, DollarSign, CheckSquare, HeadphonesIcon, Settings,
-  LogOut, ChevronLeft, ChevronRight
+  LogOut, ChevronLeft, ChevronRight, Scissors
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -17,6 +17,7 @@ const navItems = [
   { href: "/calendar", label: "Calendar", icon: Calendar },
   { href: "/inbox", label: "Inbox", icon: Mail, badge: "4" },
   { href: "/customers", label: "Customers", icon: Users },
+  { href: "/services", label: "Services", icon: Scissors },
   { href: "/leads", label: "Leads", icon: Target, badge: "24" },
   { href: "/lead-generator", label: "Lead Generator", icon: Zap },
   { href: "/earnings", label: "Earnings", icon: DollarSign },

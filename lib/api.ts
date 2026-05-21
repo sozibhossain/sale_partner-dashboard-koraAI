@@ -54,6 +54,14 @@ export const supportApi = {
   close: (id: string) => api.patch(`/support/${id}/close`),
 };
 
+export const servicesApi = {
+  getAll: (params?: object) => api.get("/services", { params }),
+  getById: (id: string) => api.get(`/services/${id}`),
+  create: (data: object) => api.post("/services", data),
+  update: (id: string, data: object) => api.put(`/services/${id}`, data),
+  delete: (id: string) => api.delete(`/services/${id}`),
+};
+
 export const calendarApi = {
   getEvents: (params?: object) => api.get("/calendar", { params }),
   getInsights: () => api.get("/calendar/insights"),
@@ -61,6 +69,19 @@ export const calendarApi = {
   createEvent: (data: object) => api.post("/calendar", data),
   updateEvent: (id: string, data: object) => api.put(`/calendar/${id}`, data),
   deleteEvent: (id: string) => api.delete(`/calendar/${id}`),
+};
+
+export const appointmentsApi = {
+  getAll: (params?: object) => api.get("/appointments", { params }),
+  getById: (id: string) => api.get(`/appointments/${id}`),
+  create: (data: object) => api.post("/appointments", data),
+  update: (id: string, data: object) => api.put(`/appointments/${id}`, data),
+  getAvailableSlots: (params?: object) =>
+    api.get("/appointments/available-slots", { params }),
+};
+
+export const employeesApi = {
+  getAll: (params?: object) => api.get("/appointments/employees", { params }),
 };
 
 export const inboxApi = {
