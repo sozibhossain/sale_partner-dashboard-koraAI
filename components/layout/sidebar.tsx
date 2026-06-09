@@ -20,7 +20,7 @@ const navItems = [
   { href: "/assistant", label: "Assistant", icon: Sparkles },
   { href: "/calendar", label: "Calendar", icon: Calendar },
   { href: "/inbox", label: "Inbox", icon: Mail, badgeKey: "inbox" as const },
-  { href: "/customers", label: "Customers", icon: Users },
+  { href: "/customers", label: "Bussinesses Owners", icon: Users },
   { href: "/services", label: "Services", icon: Scissors },
   { href: "/leads", label: "Leads", icon: Target, badgeKey: "leads" as const },
   { href: "/lead-generator", label: "Lead Generator", icon: Zap },

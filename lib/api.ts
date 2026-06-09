@@ -157,8 +157,11 @@ export const mailApi = {
 };
 
 export const koraAssistantApi = {
-  sendMessage: (data: { message: string }) => api.post("/kora-assistant", data),
-  getHistory: () => api.get("/kora-assistant"),
+  sendMessage: (data: { message: string }) => api.post("/kora-assistant/message", data),
+  getHistory: () => api.get("/kora-assistant/history"),
+  getSuggestions: () => api.get("/kora-assistant/suggestions"),
+  getCapabilities: () => api.get("/kora-assistant/capabilities"),
+  clearHistory: () => api.delete("/kora-assistant/history"),
 };
 
 export const notificationsApi = {
