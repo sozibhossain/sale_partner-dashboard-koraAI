@@ -347,13 +347,11 @@ export default function PartnerDashboardPage() {
           </Card>
 
           <Card className="border-blue-600/20 bg-gradient-to-br from-[#0d1a2d] to-[#0a1628] lg:col-span-2">
-            <CardContent className="flex h-full flex-col pt-5">
-              <div className="mb-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-blue-400" />
-                  <h2 className="text-sm font-semibold text-white">Kora Assistant</h2>
-                </div>
-                <KoraOrb size={36} />
+            <CardContent className="flex h-full flex-col gap-4 pt-5 sm:flex-row">
+              <div className="flex min-w-0 flex-1 flex-col">
+              <div className="mb-3 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-blue-400" />
+                <h2 className="text-sm font-semibold text-white">Kora Assistant</h2>
               </div>
               <div className="mb-3 flex-1 space-y-2 overflow-y-auto" style={{ maxHeight: 220 }}>
                 {assistantMessages.map((message, index) => (
@@ -425,6 +423,11 @@ export default function PartnerDashboardPage() {
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
+              </div>
+
+              <div className="hidden w-40 shrink-0 items-center justify-center sm:flex">
+                <KoraOrb size={160} />
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -433,20 +436,21 @@ export default function PartnerDashboardPage() {
         <Card>
           <CardContent className="pt-5">
             <div className="mb-3 flex items-center gap-2">
-              <Zap className="h-4 w-4 text-amber-400" />
+              <Zap className="h-4 w-4 text-[#79C1EC] drop-shadow-[0_0_6px_rgba(121,193,236,0.55)]" />
               <h2 className="text-sm font-semibold text-white">Quick Actions</h2>
             </div>
-            <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
               {quickActions.map((action) => (
                 <button
                   key={action.label}
                   onClick={action.onClick}
-                  className="flex flex-col items-center gap-2 rounded-xl border border-[#1e2d40] bg-[#0f1c30] p-3 transition-colors hover:bg-[#1e2d40]"
+                  className="group flex min-h-[92px] flex-col items-center justify-center gap-2 rounded-lg border border-[#1c2c43] bg-[#0d1a2d]/90 px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-colors hover:border-[#79C1EC]/45 hover:bg-[#122238]"
                 >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600/15 text-blue-400">
-                    <action.icon className="h-4.5 w-4.5" />
-                  </div>
-                  <span className="text-center text-[10px] leading-tight text-gray-300">
+                  <action.icon
+                    className="h-8 w-8 text-[#79C1EC] drop-shadow-[0_0_8px_rgba(121,193,236,0.45)] transition-transform group-hover:scale-105"
+                    strokeWidth={1.9}
+                  />
+                  <span className="text-center text-xs font-medium leading-tight text-gray-100">
                     {action.label}
                   </span>
                 </button>
