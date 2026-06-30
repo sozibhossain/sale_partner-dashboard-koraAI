@@ -164,6 +164,12 @@ export const koraAssistantApi = {
   clearHistory: () => api.delete("/kora-assistant/history"),
 };
 
+export const aiDataApi = {
+  create: (data: { message: string }) => api.post("/ai-data/create-ai-data", data),
+  getAll: () => api.get("/ai-data/get-ai-data"),
+  delete: (id: string) => api.delete(`/ai-data/delete-ai-data/${id}`),
+};
+
 export const notificationsApi = {
   getAll: (params?: object) => api.get("/notification", { params }),
   getUnreadCount: () => api.get("/notification/unread-count"),
