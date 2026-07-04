@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { koraAssistantApi, partnerApi } from "@/lib/api";
@@ -12,7 +13,6 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkline } from "@/components/sparkline";
-import { KoraOrb } from "@/components/kora-orb";
 import { formatCurrency, getInitials, timeAgo } from "@/lib/utils";
 import { toast } from "sonner";
 import {
@@ -426,7 +426,15 @@ export default function PartnerDashboardPage() {
               </div>
 
               <div className="hidden w-40 shrink-0 items-center justify-center sm:flex">
-                <KoraOrb size={160} />
+                <Image
+                  src="/kora.png"
+                  alt="Kora"
+                  width={160}
+                  height={160}
+                  unoptimized
+                  priority
+                  className="kora-image h-40 w-40 object-contain"
+                />
               </div>
             </CardContent>
           </Card>

@@ -110,7 +110,7 @@ export function Sidebar() {
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        <div className={cn("flex items-center gap-2 border-b border-[#1e2d40] px-4 py-5", collapsed && "justify-center px-2")}>
+        <div className={cn("flex items-center gap-2 px-4 py-5", collapsed && "justify-center px-2")}>
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600">
             <Sparkles className="h-4 w-4 text-white" />
           </div>
