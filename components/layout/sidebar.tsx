@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -104,15 +105,22 @@ export function Sidebar() {
 
       <aside
         className={cn(
-          "z-50 flex h-screen flex-col border-r border-[#1e2d40] bg-[#070f1c] transition-[transform,width] duration-300",
+          "z-50 flex h-dvh flex-col border-r border-[#1e2d40] bg-[#070f1c] transition-[transform,width] duration-300",
           collapsed ? "w-16" : "w-60",
           "fixed inset-y-0 left-0 lg:relative lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
-        <div className={cn("flex items-center gap-2 px-4 py-5", collapsed && "justify-center px-2")}>
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600">
-            <Sparkles className="h-4 w-4 text-white" />
+        <div className={cn("flex items-center gap-2 px-4 py-[clamp(0.75rem,2.4dvh,1.25rem)]", collapsed && "justify-center px-2")}>
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#071321] shadow-[0_0_14px_rgba(37,99,235,0.45)] ring-1 ring-cyan-400/20">
+            <Image
+              src="/kora-logo.png"
+              alt="KoraAI"
+              width={32}
+              height={32}
+              className="h-full w-full object-cover"
+              priority
+            />
           </div>
           {!collapsed && (
             <div>
@@ -136,7 +144,7 @@ export function Sidebar() {
           </button>
         </div>
 
-        <nav className="scrollbar-none flex-1 overflow-y-auto py-3">
+        <nav className="scrollbar-none min-h-0 flex-1 overflow-y-auto py-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -145,7 +153,7 @@ export function Sidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "mx-2 mb-0.5 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all",
+                  "mx-2 mb-0.5 flex items-center gap-3 rounded-lg px-3 py-[clamp(0.45rem,1.25dvh,0.625rem)] text-[clamp(0.75rem,1.45dvh,0.875rem)] transition-all",
                   active
                     ? "border border-blue-600/20 bg-blue-600/20 text-blue-400"
                     : "text-gray-500 hover:bg-[#1e2d40] hover:text-gray-200",
@@ -165,7 +173,7 @@ export function Sidebar() {
           })}
         </nav>
 
-        <div className="space-y-2 border-t border-[#1e2d40] p-3">
+        <div className="space-y-2 border-t border-[#1e2d40] p-[clamp(0.5rem,1.8dvh,0.75rem)]">
           {!collapsed && (
             <div className="mx-2 rounded-lg border border-blue-600/20 bg-blue-600/10 p-2">
               <div className="flex items-center gap-2">

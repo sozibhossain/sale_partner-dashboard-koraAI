@@ -1,7 +1,8 @@
 import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { isSalePartnerRole, normalizeRole } from "@/lib/roles";
 
-const allowedRoles = new Set(["sale_partner"]);
+const authCookiePrefix = "sale-partner-dashboard";
 
 class DashboardCredentialsError extends CredentialsSignin {
   constructor(code = "invalid_credentials") {
@@ -51,7 +52,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             throw new DashboardCredentialsError(mapAuthErrorCode(data?.message));
           }
 
-          if (!allowedRoles.has(data.data.role)) {
+          const role = normalizeRole(data.data.role);
+
+          if (!isSalePartnerRole(role)) {
             throw new DashboardCredentialsError("role_not_allowed");
           }
 
@@ -59,7 +62,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             id: data.data._id,
             _id: data.data._id,
             email: data.data.email,
-            role: data.data.role,
+            role,
             name: data.data.name,
             profileImage: data.data.profileImage,
             accessToken: data.data.accessToken,
@@ -107,5 +110,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     strategy: "jwt",
     maxAge: 24 * 60 * 60,
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: { name: `${authCookiePrefix}.session-token` },
+    callbackUrl: { name: `${authCookiePrefix}.callback-url` },
+    csrfToken: { name: `${authCookiePrefix}.csrf-token` },
+  },
+  trustHost: true,
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
 });

@@ -10,7 +10,7 @@ let signOutRequest: Promise<void> | null = null;
 
 const signOutOnce = () => {
   if (!signOutRequest) {
-    signOutRequest = signOut({ callbackUrl: "/login" }).then(() => undefined);
+    signOutRequest = signOut({ callbackUrl: "/login?error=session_expired" }).then(() => undefined);
   }
 
   return signOutRequest;

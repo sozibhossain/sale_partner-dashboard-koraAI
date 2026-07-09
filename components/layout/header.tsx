@@ -48,7 +48,7 @@ export function Header({ title, subtitle, action }: HeaderProps) {
       : String(displayRole).replace(/_/g, " ");
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-2 bg-[#070f1c] px-3 sm:gap-4 sm:px-6">
+    <header className="sticky top-0 z-30 flex h-[var(--dashboard-header-height,clamp(3.5rem,8dvh,4rem))] shrink-0 items-center gap-2 bg-[#070f1c] px-3 sm:gap-4 sm:px-6">
       <button
         type="button"
         onClick={() => setIsOpen(true)}
@@ -59,7 +59,7 @@ export function Header({ title, subtitle, action }: HeaderProps) {
       </button>
 
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-base font-semibold text-white sm:text-lg">{title}</h1>
+        <h1 className="truncate dashboard-fluid-title font-semibold text-white">{title}</h1>
         {subtitle ? (
           <p className="hidden truncate text-xs text-gray-500 sm:block">{subtitle}</p>
         ) : null}
