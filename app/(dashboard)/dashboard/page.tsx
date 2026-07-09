@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkline } from "@/components/sparkline";
 import { formatCurrency, getInitials, timeAgo } from "@/lib/utils";
 import { toast } from "sonner";
+import { useViewportPageSize } from "@/hooks/use-viewport-page-size";
 import {
   ArrowUpRight,
   ArrowDownRight,
@@ -53,6 +54,7 @@ export default function PartnerDashboardPage() {
   const router = useRouter();
   const [greeting, setGreeting] = useState("Welcome back");
   const [assistantInput, setAssistantInput] = useState("");
+  const [activeLeadPage, setActiveLeadPage] = useState(0);
   const [assistantMessages, setAssistantMessages] = useState<
     Array<{ role: "user" | "assistant"; content: string }>
   >([
@@ -61,6 +63,18 @@ export default function PartnerDashboardPage() {
       content: "Hi! How can I help you today?",
     },
   ]);
+  const activeLeadPageSize = useViewportPageSize({
+    rowHeight: 58,
+    reservedHeight: 430,
+    min: 3,
+    max: 10,
+  });
+  const assistantMessagePageSize = useViewportPageSize({
+    rowHeight: 48,
+    reservedHeight: 500,
+    min: 2,
+    max: 6,
+  });
 
   // Compute the time-of-day greeting on the client only — the server's timezone
   // may differ from the browser's, so doing this during render would hydrate-mismatch.
@@ -178,6 +192,15 @@ export default function PartnerDashboardPage() {
   const newLeadCount = activeLeads.filter(
     (lead: any) => lead.status === "new",
   ).length;
+  const activeLeadPageCount = Math.max(
+    1,
+    Math.ceil(activeLeads.length / activeLeadPageSize),
+  );
+  const safeActiveLeadPage = Math.min(activeLeadPage, activeLeadPageCount - 1);
+  const visibleActiveLeads = activeLeads.slice(
+    safeActiveLeadPage * activeLeadPageSize,
+    safeActiveLeadPage * activeLeadPageSize + activeLeadPageSize,
+  );
 
   const koraSuggestions = useMemo(
     () => [
@@ -227,14 +250,14 @@ export default function PartnerDashboardPage() {
   }
 
   return (
-    <div>
+    <div className="dashboard-page flex flex-col">
       <Header
         title={`${greeting}, ${firstName}! 👋`}
         subtitle="Here's what's happening with your partnership today."
       />
-      <div className="space-y-5 p-3 sm:p-4 lg:p-6">
+      <div className="dashboard-content flex flex-col gap-3">
         {/* KPI cards */}
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+        <div className="dashboard-kpi-grid">
           {isLoading
             ? Array.from({ length: 5 }).map((_, index) => (
                 <Card key={index}>
@@ -278,8 +301,8 @@ export default function PartnerDashboardPage() {
         </div>
 
         {/* Active leads + Kora assistant */}
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-5">
-          <Card className="lg:col-span-3">
+        <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-5">
+          <Card className="min-h-0 lg:col-span-3">
             <CardContent className="pt-5">
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-white">Active Leads</h2>
@@ -302,7 +325,7 @@ export default function PartnerDashboardPage() {
                 </p>
               ) : (
                 <div>
-                  {activeLeads.map((lead: any) => {
+                  {visibleActiveLeads.map((lead: any) => {
                     const badge = statusBadge[lead.status] || {
                       label: lead.status,
                       variant: "secondary",
@@ -343,18 +366,47 @@ export default function PartnerDashboardPage() {
                   })}
                 </div>
               )}
+              {activeLeads.length > activeLeadPageSize ? (
+                <div className="mt-3 flex items-center justify-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={safeActiveLeadPage === 0}
+                    onClick={() => setActiveLeadPage((page) => Math.max(0, page - 1))}
+                  >
+                    Prev
+                  </Button>
+                  <span className="text-xs text-gray-500">
+                    {safeActiveLeadPage + 1} / {activeLeadPageCount}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={safeActiveLeadPage >= activeLeadPageCount - 1}
+                    onClick={() =>
+                      setActiveLeadPage((page) =>
+                        Math.min(activeLeadPageCount - 1, page + 1),
+                      )
+                    }
+                  >
+                    Next
+                  </Button>
+                </div>
+              ) : null}
             </CardContent>
           </Card>
 
-          <Card className="border-blue-600/20 bg-gradient-to-br from-[#0d1a2d] to-[#0a1628] lg:col-span-2">
+          <Card className="min-h-0 border-blue-600/20 bg-gradient-to-br from-[#0d1a2d] to-[#0a1628] lg:col-span-2">
             <CardContent className="flex h-full flex-col gap-4 pt-5 sm:flex-row">
               <div className="flex min-w-0 flex-1 flex-col">
               <div className="mb-3 flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-blue-400" />
                 <h2 className="text-sm font-semibold text-white">Kora Assistant</h2>
               </div>
-              <div className="mb-3 flex-1 space-y-2 overflow-y-auto" style={{ maxHeight: 220 }}>
-                {assistantMessages.map((message, index) => (
+              <div className="mb-3 min-h-0 flex-1 space-y-2">
+                {assistantMessages.slice(-assistantMessagePageSize).map((message, index) => (
                   <div
                     key={`${message.role}-${index}`}
                     className={`flex ${message.role === "user" ? "justify-end" : "items-start gap-2"}`}
@@ -441,7 +493,7 @@ export default function PartnerDashboardPage() {
         </div>
 
         {/* Quick actions */}
-        <Card>
+        <Card className="dashboard-secondary">
           <CardContent className="pt-5">
             <div className="mb-3 flex items-center gap-2">
               <Zap className="h-4 w-4 text-[#79C1EC] drop-shadow-[0_0_6px_rgba(121,193,236,0.55)]" />
@@ -468,7 +520,7 @@ export default function PartnerDashboardPage() {
         </Card>
 
         {/* Kora suggestions */}
-        <Card>
+        <Card className="dashboard-secondary">
           <CardContent className="pt-5">
             <div className="mb-3 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-blue-400" />

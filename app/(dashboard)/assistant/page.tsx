@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { aiDataApi } from "@/lib/api";
+import { useViewportPageSize } from "@/hooks/use-viewport-page-size";
 
 interface Message { id: string; role: "user" | "assistant"; content: string; time: string; }
 interface Conversation {
@@ -76,6 +77,18 @@ export default function AssistantPage() {
   const queryClient = useQueryClient();
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
+  const recentPageSize = useViewportPageSize({
+    rowHeight: 68,
+    reservedHeight: 430,
+    min: 2,
+    max: 5,
+  });
+  const smartSuggestionPageSize = useViewportPageSize({
+    rowHeight: 72,
+    reservedHeight: 360,
+    min: 2,
+    max: 4,
+  });
 
   const { data: historyResponse } = useQuery({
     queryKey: ["ai-data-history"],
@@ -117,14 +130,14 @@ export default function AssistantPage() {
   }
 
   return (
-    <div>
+    <div className="dashboard-page flex flex-col">
       <Header
         title="Kora Assistant"
         subtitle="Your AI assistant that helps you manage leads, customers and earnings."
       />
-      <div className="p-3 sm:p-4 lg:p-6">
-        <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(280px,0.85fr)]">
-          <div className="space-y-4">
+      <div className="dashboard-content">
+        <div className="grid h-full min-h-0 grid-cols-1 gap-3 xl:grid-cols-[minmax(0,2fr)_minmax(280px,0.85fr)]">
+          <div className="flex min-h-0 flex-col gap-3">
             <Card className="overflow-hidden border-blue-600/20 bg-[#091526]">
               <CardContent className="p-0">
                 <div className="flex min-h-[224px] flex-col gap-5 p-5 sm:flex-row sm:items-center">
@@ -192,7 +205,7 @@ export default function AssistantPage() {
               </CardHeader>
               <CardContent className="p-0">
                 <div className="divide-y divide-[#1e2d40] px-5">
-                  {recentConversations.slice(0, 4).map((conversation, index) => (
+                  {recentConversations.slice(0, recentPageSize).map((conversation, index) => (
                     <button
                       key={conversation._id || conversation.userMessage || index}
                       type="button"
@@ -238,7 +251,7 @@ export default function AssistantPage() {
             </Card>
           </div>
 
-          <div className="space-y-4">
+          <div className="dashboard-secondary space-y-3">
             <Card className="border-blue-600/20 bg-[#091526]">
               <CardContent className="p-5">
                 <div className="mb-4 flex items-center gap-2 text-sm text-gray-200">
@@ -275,7 +288,7 @@ export default function AssistantPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                {smartSuggestions.map((suggestion) => (
+                {smartSuggestions.slice(0, smartSuggestionPageSize).map((suggestion) => (
                   <button
                     type="button"
                     key={suggestion.title}
