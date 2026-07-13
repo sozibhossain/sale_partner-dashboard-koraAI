@@ -252,7 +252,7 @@ export default function PartnerDashboardPage() {
   return (
     <div className="dashboard-page flex flex-col">
       <Header
-        title={`${greeting}, ${firstName}! 👋`}
+        title={`${greeting}, ${firstName}!`}
         subtitle="Here's what's happening with your partnership today."
       />
       <div className="dashboard-content flex flex-col gap-3">
