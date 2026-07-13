@@ -6,9 +6,22 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { cn, getInitials } from "@/lib/utils";
 import {
-  LayoutDashboard, Sparkles, Calendar, Mail, Users, Target,
-  Zap, DollarSign, CheckSquare, HeadphonesIcon, Settings,
-  LogOut, ChevronLeft, ChevronRight, X, Scissors
+  Calendar,
+  CheckSquare,
+  ChevronLeft,
+  ChevronRight,
+  DollarSign,
+  HeadphonesIcon,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  Scissors,
+  Settings,
+  Sparkles,
+  Target,
+  Users,
+  X,
+  Zap,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -21,7 +34,7 @@ const navItems = [
   { href: "/assistant", label: "Assistant", icon: Sparkles },
   { href: "/calendar", label: "Calendar", icon: Calendar },
   { href: "/inbox", label: "Inbox", icon: Mail, badgeKey: "inbox" as const },
-  { href: "/customers", label: "Bussinesses Owners", icon: Users },
+  { href: "/customers", label: "Business Owners", icon: Users },
   { href: "/services", label: "Services", icon: Scissors },
   { href: "/leads", label: "Leads", icon: Target, badgeKey: "leads" as const },
   { href: "/lead-generator", label: "Lead Generator", icon: Zap },
@@ -54,7 +67,8 @@ export function Sidebar() {
     | undefined;
 
   const displayName = profileData?.name || sessionUser?.name || "Sales Partner";
-  const displayImage = profileData?.profileImage?.url || sessionUser?.profileImage?.url || "";
+  const displayImage =
+    profileData?.profileImage?.url || sessionUser?.profileImage?.url || "";
   const displayRole = profileData?.role || sessionUser?.role || "sale_partner";
   const roleLabel =
     displayRole === "sale_partner"
@@ -76,7 +90,9 @@ export function Sidebar() {
   const { data: leadsData } = useQuery({
     queryKey: ["sidebar-leads-new"],
     queryFn: () =>
-      leadsApi.getAll({ status: "new", limit: 1 }).then((response) => response.data),
+      leadsApi
+        .getAll({ status: "new", limit: 1 })
+        .then((response) => response.data),
     refetchInterval: 120000,
     refetchOnWindowFocus: true,
   });
@@ -105,49 +121,73 @@ export function Sidebar() {
 
       <aside
         className={cn(
-          "z-50 flex h-dvh flex-col border-r border-[#1e2d40] bg-[#070f1c] transition-[transform,width] duration-300",
-          collapsed ? "w-16" : "w-60",
+          "z-50 flex h-dvh flex-col border-r border-[#14304c] bg-[#061326] transition-[transform,width] duration-300",
+          collapsed ? "w-16" : "w-[264px]",
           "fixed inset-y-0 left-0 lg:relative lg:translate-x-0",
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
-        <div className={cn("flex items-center gap-2 px-4 py-[clamp(0.75rem,2.4dvh,1.25rem)]", collapsed && "justify-center px-2")}>
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#071321] shadow-[0_0_14px_rgba(37,99,235,0.45)] ring-1 ring-cyan-400/20">
+        <div
+          className={cn(
+            "flex items-center gap-3 px-6 py-[clamp(0.75rem,2.4dvh,1.5rem)]",
+            collapsed && "justify-center px-2",
+          )}
+        >
+          <div className="relative flex h-[clamp(2rem,4dvh,2.5rem)] w-[clamp(2rem,4dvh,2.5rem)] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#071321] shadow-[0_0_18px_rgba(0,183,255,0.35)] ring-1 ring-cyan-400/25">
             <Image
               src="/kora-logo.png"
               alt="KoraAI"
-              width={32}
-              height={32}
+              width={40}
+              height={40}
               className="h-full w-full object-cover"
               priority
             />
           </div>
           {!collapsed && (
             <div>
-              <span className="text-sm font-bold text-white">KoraAI</span>
-              <p className="text-[10px] text-gray-500">Partner Dashboard</p>
+              <span className="text-[clamp(1.1rem,2.6dvh,1.75rem)] font-semibold leading-none text-white">
+                KoraAI
+              </span>
+              <p className="mt-1 text-[14px] text-[#a8b5c6]">
+                Partner Dashboard
+              </p>
             </div>
           )}
           <button
             onClick={() => setIsOpen(false)}
-            className={cn("ml-auto text-gray-500 hover:text-gray-300 lg:hidden", collapsed && "ml-0")}
+            className={cn(
+              "ml-auto text-gray-500 hover:text-gray-300 lg:hidden",
+              collapsed && "ml-0",
+            )}
             aria-label="Close menu"
           >
             <X className="h-4 w-4" />
           </button>
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className={cn("ml-auto hidden text-gray-500 hover:text-gray-300 lg:inline-flex", collapsed && "ml-0")}
-            aria-label={collapsed ? "Expand" : "Collapse"}
+            className={cn(
+              "ml-auto hidden h-8 w-8 items-center justify-center rounded-full border border-[#14304c] text-[#8fa0b6] transition-colors hover:text-gray-300 lg:inline-flex",
+              collapsed && "ml-0",
+            )}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            {collapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
           </button>
         </div>
 
-        <nav className="scrollbar-none min-h-0 flex-1 overflow-y-auto py-2">
+        <nav className="scrollbar-none min-h-0 flex-1 overflow-y-auto px-3 py-2">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = pathname === item.href || pathname.startsWith(item.href + "/");
+            const active =
+              pathname === item.href || pathname.startsWith(item.href + "/");
+            const badge = badgeFor(
+              "badgeKey" in item ? item.badgeKey : undefined,
+            );
+
             return (
               <Link
                 key={item.href}
@@ -155,58 +195,72 @@ export function Sidebar() {
                 className={cn(
                   "mx-2 mb-0.5 flex items-center gap-3 rounded-lg px-3 py-[clamp(0.45rem,1.25dvh,0.625rem)] text-[clamp(0.75rem,1.45dvh,0.875rem)] transition-all",
                   active
-                    ? "border border-blue-600/20 bg-blue-600/20 text-blue-400"
-                    : "text-gray-500 hover:bg-[#1e2d40] hover:text-gray-200",
-                  collapsed && "justify-center px-2"
+                    ? "border border-[#126dff] bg-[#07337a] text-[#d9ecff] shadow-[inset_0_0_24px_rgba(17,104,255,0.22)]"
+                    : "text-[#c4ccda] hover:bg-[#0b1e36] hover:text-gray-100",
+                  collapsed && "justify-center px-2",
                 )}
                 title={collapsed ? item.label : undefined}
               >
-                <Icon className="h-4 w-4 shrink-0" />
-                {!collapsed && <span className="flex-1 truncate">{item.label}</span>}
-                {!collapsed && badgeFor("badgeKey" in item ? item.badgeKey : undefined) && (
-                  <span className="rounded-full bg-blue-600/30 px-1.5 py-0.5 text-[10px] font-semibold text-blue-400">
-                    {badgeFor("badgeKey" in item ? item.badgeKey : undefined)}
+                <Icon className="h-[clamp(1rem,2.2dvh,1.5rem)] w-[clamp(1rem,2.2dvh,1.5rem)] shrink-0" />
+                {!collapsed && (
+                  <span className="flex-1 truncate text-[clamp(0.82rem,1.55dvh,1rem)]">
+                    {item.label}
                   </span>
                 )}
+                {!collapsed && badge ? (
+                  <span className="rounded-full bg-blue-600/30 px-1.5 py-0.5 text-[10px] font-semibold text-blue-400">
+                    {badge}
+                  </span>
+                ) : null}
               </Link>
             );
           })}
         </nav>
 
-        <div className="space-y-2 border-t border-[#1e2d40] p-[clamp(0.5rem,1.8dvh,0.75rem)]">
-          {!collapsed && (
-            <div className="mx-2 rounded-lg border border-blue-600/20 bg-blue-600/10 p-2">
-              <div className="flex items-center gap-2">
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#1e2d40]">
-                  <span className="text-xs">🤝</span>
+        <div className="border-t border-[#14304c] p-[clamp(0.75rem,2.4dvh,1.5rem)]">
+          {collapsed ? (
+            <div className="flex flex-col items-center gap-4">
+              <Avatar className="h-[clamp(2rem,4dvh,2.5rem)] w-[clamp(2rem,4dvh,2.5rem)] shrink-0 ring-2 ring-blue-500/20">
+                {displayImage ? (
+                  <AvatarImage src={displayImage} alt={displayName} />
+                ) : null}
+                <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
+              </Avatar>
+              <button
+                onClick={() => signOut({ callbackUrl: "/login" })}
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-[#c7d0df] transition-colors hover:bg-[#0b1e36] hover:text-red-300"
+                aria-label="Logout"
+              >
+                <LogOut className="h-5 w-5" />
+              </button>
+            </div>
+          ) : (
+            <div className="rounded-lg border border-[#14304c] bg-[#071a31] p-3 shadow-[inset_0_0_20px_rgba(17,104,255,0.12)]">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-[clamp(2rem,4.6dvh,2.75rem)] w-[clamp(2rem,4.6dvh,2.75rem)] shrink-0 rounded-xl border border-blue-400/20">
+                  {displayImage ? (
+                    <AvatarImage src={displayImage} alt={displayName} />
+                  ) : null}
+                  <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[clamp(0.82rem,1.55dvh,1rem)] font-semibold text-white">
+                    {displayName}
+                  </p>
+                  <p className="text-[12px] capitalize text-[#a8b5c6]">
+                    {roleLabel}
+                  </p>
                 </div>
-                <div className="min-w-0">
-                  <p className="truncate text-xs font-medium text-gray-200">{displayName}</p>
-                  <p className="text-[10px] capitalize text-gray-500">{roleLabel}</p>
-                </div>
-                <span className="ml-auto text-gray-500">▾</span>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  className="text-[#c7d0df] transition-colors hover:text-red-300"
+                  aria-label="Logout"
+                >
+                  <LogOut className="h-5 w-5" />
+                </button>
               </div>
             </div>
           )}
-          <div className={cn("flex items-center gap-2 rounded-lg p-2", collapsed && "justify-center")}>
-            <Avatar className="h-8 w-8 shrink-0">
-              {displayImage ? (
-                <AvatarImage src={displayImage} alt={displayName} />
-              ) : null}
-              <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
-            </Avatar>
-            {!collapsed && (
-              <>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-medium text-gray-200">{displayName}</p>
-                  <p className="text-[10px] capitalize text-gray-500">{roleLabel}</p>
-                </div>
-                <button onClick={() => signOut({ callbackUrl: "/login" })} className="text-gray-500 transition-colors hover:text-red-400">
-                  <LogOut className="h-4 w-4" />
-                </button>
-              </>
-            )}
-          </div>
         </div>
       </aside>
     </>
