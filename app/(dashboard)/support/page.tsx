@@ -48,6 +48,7 @@ import {
   UserRound,
   Users,
 } from "lucide-react";
+import Image from "next/image";
 
 type SupportView = "help" | "requests" | "contact";
 
@@ -69,12 +70,42 @@ const STATUS_BADGE: Record<string, any> = {
 };
 
 const TYPE_OPTIONS = [
-  { value: "technical_issue", label: "Technical issue", icon: Code2, hint: "Bug, error, or system problem" },
-  { value: "account_access", label: "Account & Access", icon: UserRound, hint: "Login, permissions, 2FA" },
-  { value: "billing", label: "Billing & Payments", icon: CreditCard, hint: "Invoices, charges, refunds" },
-  { value: "data_reports", label: "Data & Reports", icon: Database, hint: "Data missing or incorrect" },
-  { value: "integration", label: "Integration", icon: Link2, hint: "Third-party or API issues" },
-  { value: "other", label: "Other", icon: MoreHorizontal, hint: "Something else" },
+  {
+    value: "technical_issue",
+    label: "Technical issue",
+    icon: Code2,
+    hint: "Bug, error, or system problem",
+  },
+  {
+    value: "account_access",
+    label: "Account & Access",
+    icon: UserRound,
+    hint: "Login, permissions, 2FA",
+  },
+  {
+    value: "billing",
+    label: "Billing & Payments",
+    icon: CreditCard,
+    hint: "Invoices, charges, refunds",
+  },
+  {
+    value: "data_reports",
+    label: "Data & Reports",
+    icon: Database,
+    hint: "Data missing or incorrect",
+  },
+  {
+    value: "integration",
+    label: "Integration",
+    icon: Link2,
+    hint: "Third-party or API issues",
+  },
+  {
+    value: "other",
+    label: "Other",
+    icon: MoreHorizontal,
+    hint: "Something else",
+  },
 ];
 
 const PRIORITY_OPTIONS = [
@@ -87,7 +118,8 @@ const PRIORITY_OPTIONS = [
 const HELP_TOPICS = [
   {
     title: "Account & Login",
-    description: "Login issues, password reset, 2FA, account access and security.",
+    description:
+      "Login issues, password reset, 2FA, account access and security.",
     articles: 8,
     icon: UserRound,
     tone: "bg-blue-600/20 text-blue-300",
@@ -115,14 +147,16 @@ const HELP_TOPICS = [
   },
   {
     title: "Technical Issues",
-    description: "Bug reports, application errors, performance and system issues.",
+    description:
+      "Bug reports, application errors, performance and system issues.",
     articles: 9,
     icon: Code2,
     tone: "bg-indigo-600/20 text-indigo-300",
   },
   {
     title: "Security & Privacy",
-    description: "Data protection, privacy settings, permissions and compliance.",
+    description:
+      "Data protection, privacy settings, permissions and compliance.",
     articles: 6,
     icon: Shield,
     tone: "bg-emerald-600/20 text-emerald-300",
@@ -134,7 +168,10 @@ const POPULAR_ARTICLES = [
   { title: "Fix calendar sync issues", category: "Calendar & Appointments" },
   { title: "How to add a new customer", category: "Leads & Customers" },
   { title: "Understanding your earnings", category: "Billing & Earnings" },
-  { title: "Enable two-factor authentication (2FA)", category: "Account & Login" },
+  {
+    title: "Enable two-factor authentication (2FA)",
+    category: "Account & Login",
+  },
 ];
 
 export default function SupportPage() {
@@ -160,7 +197,10 @@ export default function SupportPage() {
         .then((response) => response.data),
   });
 
-  const tickets: any[] = useMemo(() => listResponse?.data || [], [listResponse?.data]);
+  const tickets: any[] = useMemo(
+    () => listResponse?.data || [],
+    [listResponse?.data],
+  );
   const meta = listResponse?.meta || { total: 0 };
   const totalPages = Math.max(1, Math.ceil((meta.total || 0) / limit));
 
@@ -171,7 +211,7 @@ export default function SupportPage() {
       (ticket) =>
         ticket.subject?.toLowerCase().includes(term) ||
         ticket.ticket_id?.toLowerCase().includes(term) ||
-        ticket.priority?.toLowerCase().includes(term)
+        ticket.priority?.toLowerCase().includes(term),
     );
   }, [tickets, search]);
 
@@ -181,7 +221,7 @@ export default function SupportPage() {
     return HELP_TOPICS.filter(
       (topic) =>
         topic.title.toLowerCase().includes(term) ||
-        topic.description.toLowerCase().includes(term)
+        topic.description.toLowerCase().includes(term),
     );
   }, [articleSearch]);
 
@@ -191,7 +231,7 @@ export default function SupportPage() {
     return POPULAR_ARTICLES.filter(
       (article) =>
         article.title.toLowerCase().includes(term) ||
-        article.category.toLowerCase().includes(term)
+        article.category.toLowerCase().includes(term),
     );
   }, [articleSearch]);
 
@@ -204,9 +244,9 @@ export default function SupportPage() {
           stats[status] = (stats[status] || 0) + 1;
           return stats;
         },
-        { all: 0 } as Record<string, number>
+        { all: 0 } as Record<string, number>,
       ),
-    [tickets]
+    [tickets],
   );
 
   useEffect(() => {
@@ -218,15 +258,21 @@ export default function SupportPage() {
 
   const { data: detailResponse, isLoading: detailLoading } = useQuery({
     queryKey: ["sp-ticket", selectedId],
-    queryFn: () => supportApi.getById(String(selectedId)).then((response) => response.data?.data),
+    queryFn: () =>
+      supportApi
+        .getById(String(selectedId))
+        .then((response) => response.data?.data),
     enabled: Boolean(selectedId),
   });
 
-  const selected = detailResponse || tickets.find((ticket) => ticket._id === selectedId);
-  const selectedType = TYPE_OPTIONS.find((item) => item.value === type) || TYPE_OPTIONS[0];
+  const selected =
+    detailResponse || tickets.find((ticket) => ticket._id === selectedId);
+  const selectedType =
+    TYPE_OPTIONS.find((item) => item.value === type) || TYPE_OPTIONS[0];
 
   const createMutation = useMutation({
-    mutationFn: () => supportApi.create({ subject, type, priority, description }),
+    mutationFn: () =>
+      supportApi.create({ subject, type, priority, description }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sp-tickets"] });
       setSubject("");
@@ -241,7 +287,8 @@ export default function SupportPage() {
   });
 
   const replyMutation = useMutation({
-    mutationFn: () => supportApi.reply(String(selectedId), { message: replyText }),
+    mutationFn: () =>
+      supportApi.reply(String(selectedId), { message: replyText }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sp-ticket", selectedId] });
       queryClient.invalidateQueries({ queryKey: ["sp-tickets"] });
@@ -312,7 +359,9 @@ export default function SupportPage() {
             <CardContent className="p-4">
               <div className="mb-4 flex items-center gap-2">
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                <p className="text-sm font-semibold text-white">System Status</p>
+                <p className="text-sm font-semibold text-white">
+                  System Status
+                </p>
               </div>
               <p className="flex items-center gap-2 text-xs text-gray-300">
                 <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
@@ -385,13 +434,17 @@ export default function SupportPage() {
               <CardContent className="p-4">
                 <div className="mb-4 flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                  <p className="text-sm font-semibold text-white">System Status</p>
+                  <p className="text-sm font-semibold text-white">
+                    System Status
+                  </p>
                 </div>
                 <p className="flex items-center gap-2 text-xs text-gray-300">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                   All systems operational
                 </p>
-                <p className="mt-1 text-xs text-gray-500">Everything is running smoothly.</p>
+                <p className="mt-1 text-xs text-gray-500">
+                  Everything is running smoothly.
+                </p>
                 <button className="mt-6 inline-flex items-center gap-2 text-xs text-blue-400 hover:text-blue-300">
                   View status page <ArrowRight className="h-3.5 w-3.5" />
                 </button>
@@ -427,10 +480,14 @@ function SupportNavButton({
           : "border-transparent text-gray-300 hover:bg-[#0d1a2d]"
       }`}
     >
-      <Icon className={active ? "h-5 w-5 text-blue-300" : "h-5 w-5 text-gray-400"} />
+      <Icon
+        className={active ? "h-5 w-5 text-blue-300" : "h-5 w-5 text-gray-400"}
+      />
       <span className="min-w-0">
         <span className="block text-sm font-medium">{title}</span>
-        <span className="block truncate text-[11px] text-gray-500">{description}</span>
+        <span className="block truncate text-[11px] text-gray-500">
+          {description}
+        </span>
       </span>
     </button>
   );
@@ -452,7 +509,9 @@ function HelpCenterView({
       <CardContent className="p-4">
         <div className="mb-4">
           <h2 className="text-lg font-semibold text-white">Help Center</h2>
-          <p className="mt-1 text-sm text-gray-400">Find answers, guides and solutions for common topics.</p>
+          <p className="mt-1 text-sm text-gray-400">
+            Find answers, guides and solutions for common topics.
+          </p>
         </div>
         <div className="mb-5 flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
@@ -484,19 +543,29 @@ function HelpCenterView({
                 type="button"
                 className="min-h-[210px] rounded-lg border border-[#1e2d40] bg-[radial-gradient(circle_at_0%_0%,rgba(37,99,235,0.14),transparent_36%),#091526] p-4 text-left transition-colors hover:border-blue-500/50"
               >
-                <span className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg ${topic.tone}`}>
+                <span
+                  className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg ${topic.tone}`}
+                >
                   <Icon className="h-5 w-5" />
                 </span>
-                <p className="text-sm font-semibold text-white">{topic.title}</p>
-                <p className="mt-2 min-h-16 text-sm leading-6 text-gray-400">{topic.description}</p>
-                <p className="mt-4 text-xs text-gray-500">{topic.articles} articles</p>
+                <p className="text-sm font-semibold text-white">
+                  {topic.title}
+                </p>
+                <p className="mt-2 min-h-16 text-sm leading-6 text-gray-400">
+                  {topic.description}
+                </p>
+                <p className="mt-4 text-xs text-gray-500">
+                  {topic.articles} articles
+                </p>
               </button>
             );
           })}
         </div>
         <div className="mt-5 border-t border-[#1e2d40] pt-4">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-base font-semibold text-white">Popular Articles</h3>
+            <h3 className="text-base font-semibold text-white">
+              Popular Articles
+            </h3>
             <button className="inline-flex items-center gap-2 text-xs text-blue-400 hover:text-blue-300">
               View all articles <ArrowRight className="h-3.5 w-3.5" />
             </button>
@@ -510,7 +579,9 @@ function HelpCenterView({
               >
                 <span className="flex min-w-0 items-center gap-3">
                   <FileText className="h-4 w-4 shrink-0 text-gray-400" />
-                  <span className="truncate text-sm text-gray-200">{article.title}</span>
+                  <span className="truncate text-sm text-gray-200">
+                    {article.title}
+                  </span>
                 </span>
                 <Badge variant="secondary" className="shrink-0 text-[10px]">
                   {article.category}
@@ -571,7 +642,9 @@ function RequestsView({
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-white">My Requests</h2>
-            <p className="mt-1 text-sm text-gray-400">View and track all your support requests.</p>
+            <p className="mt-1 text-sm text-gray-400">
+              View and track all your support requests.
+            </p>
           </div>
           <Button onClick={onNewRequest}>
             <Plus className="mr-1 h-4 w-4" />
@@ -595,7 +668,9 @@ function RequestsView({
                 }`}
               >
                 {option.label}
-                <span className="ml-2 text-[10px] opacity-70">{counts[option.value] || 0}</span>
+                <span className="ml-2 text-[10px] opacity-70">
+                  {counts[option.value] || 0}
+                </span>
               </button>
             ))}
           </div>
@@ -626,7 +701,9 @@ function RequestsView({
                 ))}
               </div>
             ) : tickets.length === 0 ? (
-              <p className="p-8 text-center text-sm text-gray-500">No support requests found.</p>
+              <p className="p-8 text-center text-sm text-gray-500">
+                No support requests found.
+              </p>
             ) : (
               tickets.map((ticket) => (
                 <button
@@ -634,20 +711,30 @@ function RequestsView({
                   type="button"
                   onClick={() => setSelectedId(ticket._id)}
                   className={`grid w-full grid-cols-[1.5fr_0.85fr_0.75fr_0.9fr_0.9fr_36px] items-center border-b border-[#1e2d40] px-3 py-3 text-left text-xs last:border-0 hover:bg-[#0d1a2d] ${
-                    selectedId === ticket._id ? "bg-blue-600/10 ring-1 ring-inset ring-blue-500" : ""
+                    selectedId === ticket._id
+                      ? "bg-blue-600/10 ring-1 ring-inset ring-blue-500"
+                      : ""
                   }`}
                 >
                   <span className="min-w-0">
-                    <span className="block truncate font-medium text-gray-100">{ticket.subject || "Support request"}</span>
-                    <span className="mt-1 block text-[10px] text-gray-500">{ticket.ticket_id || ticket._id}</span>
+                    <span className="block truncate font-medium text-gray-100">
+                      {ticket.subject || "Support request"}
+                    </span>
+                    <span className="mt-1 block text-[10px] text-gray-500">
+                      {ticket.ticket_id || ticket._id}
+                    </span>
                   </span>
                   <span>
-                    <Badge variant={STATUS_BADGE[ticket.status] || "default"} className="text-[10px]">
+                    <Badge
+                      variant={STATUS_BADGE[ticket.status] || "default"}
+                      className="text-[10px]"
+                    >
                       {String(ticket.status || "open").replace("_", " ")}
                     </Badge>
                   </span>
                   <span className="flex items-center gap-1 capitalize text-gray-300">
-                    {String(ticket.priority || "medium").toLowerCase() === "high" ||
+                    {String(ticket.priority || "medium").toLowerCase() ===
+                      "high" ||
                     String(ticket.priority || "").toLowerCase() === "urgent" ? (
                       <ArrowUp className="h-3.5 w-3.5 text-orange-400" />
                     ) : (
@@ -655,14 +742,20 @@ function RequestsView({
                     )}
                     {ticket.priority || "Medium"}
                   </span>
-                  <span className="text-gray-400">{ticket.updatedAt ? timeAgo(ticket.updatedAt) : "Recently"}</span>
-                  <span className="text-gray-400">{ticket.createdAt ? formatDate(ticket.createdAt) : "--"}</span>
+                  <span className="text-gray-400">
+                    {ticket.updatedAt ? timeAgo(ticket.updatedAt) : "Recently"}
+                  </span>
+                  <span className="text-gray-400">
+                    {ticket.createdAt ? formatDate(ticket.createdAt) : "--"}
+                  </span>
                   <ChevronRight className="h-4 w-4 text-gray-500" />
                 </button>
               ))
             )}
             <div className="flex items-center justify-between border-t border-[#1e2d40] px-4 py-3 text-xs text-gray-500">
-              <span>Page {page} of {totalPages}</span>
+              <span>
+                Page {page} of {totalPages}
+              </span>
               <div className="flex items-center gap-2">
                 <Button
                   size="icon"
@@ -733,30 +826,50 @@ function RequestDetailCard({
     <div className="rounded-lg border border-[#1e2d40] bg-[radial-gradient(circle_at_0%_0%,rgba(37,99,235,0.12),transparent_34%),#091526] p-4">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-white">{selected.subject || "Support request"}</p>
-          <p className="mt-1 text-xs text-gray-500">{selected.ticket_id || selected._id}</p>
+          <p className="text-sm font-semibold text-white">
+            {selected.subject || "Support request"}
+          </p>
+          <p className="mt-1 text-xs text-gray-500">
+            {selected.ticket_id || selected._id}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Copy className="h-3.5 w-3.5 text-gray-500" />
           <MoreHorizontal className="h-4 w-4 text-gray-500" />
         </div>
       </div>
-      <Badge variant={STATUS_BADGE[selected.status] || "default"} className="mb-4 text-[10px]">
+      <Badge
+        variant={STATUS_BADGE[selected.status] || "default"}
+        className="mb-4 text-[10px]"
+      >
         {String(selected.status || "open").replace("_", " ")}
       </Badge>
       <div className="space-y-3 border-t border-[#1e2d40] pt-4 text-xs">
-        <Row label="Created">{selected.createdAt ? formatDate(selected.createdAt) : "--"}</Row>
-        <Row label="Last Updated">{selected.updatedAt ? timeAgo(selected.updatedAt) : "--"}</Row>
+        <Row label="Created">
+          {selected.createdAt ? formatDate(selected.createdAt) : "--"}
+        </Row>
+        <Row label="Last Updated">
+          {selected.updatedAt ? timeAgo(selected.updatedAt) : "--"}
+        </Row>
         <Row label="Priority">{selected.priority || "Medium"}</Row>
       </div>
       <div className="mt-4 border-t border-[#1e2d40] pt-4">
         <p className="text-xs font-semibold text-gray-200">Description</p>
-        <p className="mt-2 text-xs leading-5 text-gray-400">{selected.description || "No description provided."}</p>
+        <p className="mt-2 text-xs leading-5 text-gray-400">
+          {selected.description || "No description provided."}
+        </p>
       </div>
       <div className="mt-4 border-t border-[#1e2d40] pt-4">
         <p className="mb-3 text-xs font-semibold text-gray-200">Timeline</p>
-        <TimelineItem title="You created this request" time={selected.createdAt ? timeAgo(selected.createdAt) : "Recently"} />
-        <TimelineItem title="Support Team added note" time={selected.updatedAt ? timeAgo(selected.updatedAt) : "Pending"} active />
+        <TimelineItem
+          title="You created this request"
+          time={selected.createdAt ? timeAgo(selected.createdAt) : "Recently"}
+        />
+        <TimelineItem
+          title="Support Team added note"
+          time={selected.updatedAt ? timeAgo(selected.updatedAt) : "Pending"}
+          active
+        />
       </div>
       {selected.status !== "closed" ? (
         <div className="mt-4 flex gap-2 border-t border-[#1e2d40] pt-4">
@@ -766,7 +879,11 @@ function RequestDetailCard({
             onChange={(event) => setReplyText(event.target.value)}
             className="h-9 flex-1 text-xs"
           />
-          <Button size="sm" onClick={onReply} disabled={!replyText.trim() || replying}>
+          <Button
+            size="sm"
+            onClick={onReply}
+            disabled={!replyText.trim() || replying}
+          >
             <Send className="h-3.5 w-3.5" />
           </Button>
         </div>
@@ -807,8 +924,13 @@ function ContactSupportView({
       <Card>
         <CardContent className="p-4">
           <div className="border-b border-[#1e2d40] pb-5">
-            <h2 className="text-lg font-semibold text-white">Contact Support</h2>
-            <p className="mt-1 text-sm text-gray-400">Cannot find a solution? Send a request to our system administrators.</p>
+            <h2 className="text-lg font-semibold text-white">
+              Contact Support
+            </h2>
+            <p className="mt-1 text-sm text-gray-400">
+              Cannot find a solution? Send a request to our system
+              administrators.
+            </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               {[
                 ["1", "Describe Issue", "Tell us what is going on"],
@@ -816,12 +938,18 @@ function ContactSupportView({
                 ["3", "Request Submitted", "We will get back to you"],
               ].map(([step, title, sub], index) => (
                 <div key={step} className="flex items-center gap-3">
-                  <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${index === 0 ? "bg-blue-600 text-white" : "border border-[#1e2d40] text-gray-400"}`}>
+                  <span
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${index === 0 ? "bg-blue-600 text-white" : "border border-[#1e2d40] text-gray-400"}`}
+                  >
                     {step}
                   </span>
                   <span>
-                    <span className="block text-xs font-semibold text-gray-100">{title}</span>
-                    <span className="block text-[11px] text-gray-500">{sub}</span>
+                    <span className="block text-xs font-semibold text-gray-100">
+                      {title}
+                    </span>
+                    <span className="block text-[11px] text-gray-500">
+                      {sub}
+                    </span>
                   </span>
                 </div>
               ))}
@@ -830,7 +958,9 @@ function ContactSupportView({
 
           <div className="grid gap-4 pt-5 xl:grid-cols-[minmax(0,1fr)_260px]">
             <div className="rounded-lg border border-[#1e2d40] bg-[#07111f] p-4">
-              <h3 className="text-sm font-semibold text-white">1. What can we help you with?</h3>
+              <h3 className="text-sm font-semibold text-white">
+                1. What can we help you with?
+              </h3>
               <p className="mt-1 text-xs text-gray-500">Select a category</p>
               <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {TYPE_OPTIONS.map((option) => {
@@ -842,15 +972,23 @@ function ContactSupportView({
                       type="button"
                       onClick={() => setType(option.value)}
                       className={`flex items-center gap-3 rounded-lg border p-3 text-left transition-colors ${
-                        active ? "border-blue-500 bg-blue-600/10" : "border-[#1e2d40] hover:bg-[#0d1a2d]"
+                        active
+                          ? "border-blue-500 bg-blue-600/10"
+                          : "border-[#1e2d40] hover:bg-[#0d1a2d]"
                       }`}
                     >
-                      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? "bg-blue-600/20 text-blue-300" : "bg-[#1e2d40] text-gray-400"}`}>
+                      <span
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? "bg-blue-600/20 text-blue-300" : "bg-[#1e2d40] text-gray-400"}`}
+                      >
                         <Icon className="h-4 w-4" />
                       </span>
                       <span className="min-w-0">
-                        <span className="block text-xs font-semibold text-gray-100">{option.label}</span>
-                        <span className="block truncate text-[10px] text-gray-500">{option.hint}</span>
+                        <span className="block text-xs font-semibold text-gray-100">
+                          {option.label}
+                        </span>
+                        <span className="block truncate text-[10px] text-gray-500">
+                          {option.hint}
+                        </span>
                       </span>
                     </button>
                   );
@@ -858,7 +996,9 @@ function ContactSupportView({
               </div>
 
               <div className="mt-6 space-y-3">
-                <h3 className="text-sm font-semibold text-white">2. Describe your issue</h3>
+                <h3 className="text-sm font-semibold text-white">
+                  2. Describe your issue
+                </h3>
                 <div className="space-y-1.5">
                   <Label>Subject</Label>
                   <Input
@@ -879,11 +1019,17 @@ function ContactSupportView({
                 </div>
                 <div className="rounded-lg border border-dashed border-[#334155] p-4 text-center">
                   <Paperclip className="mx-auto h-5 w-5 text-gray-400" />
-                  <p className="mt-2 text-xs text-gray-400">Drag & drop files here or click to browse</p>
-                  <p className="mt-1 text-[10px] text-gray-500">Max file size: 10 MB</p>
+                  <p className="mt-2 text-xs text-gray-400">
+                    Drag & drop files here or click to browse
+                  </p>
+                  <p className="mt-1 text-[10px] text-gray-500">
+                    Max file size: 10 MB
+                  </p>
                 </div>
                 <div className="flex justify-between pt-2">
-                  <Button variant="outline" onClick={onCancel}>Cancel</Button>
+                  <Button variant="outline" onClick={onCancel}>
+                    Cancel
+                  </Button>
                   <Button onClick={onSubmit} disabled={submitting}>
                     {submitting ? "Submitting..." : "Continue"}
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -893,12 +1039,18 @@ function ContactSupportView({
             </div>
 
             <div className="rounded-lg border border-[#1e2d40] bg-[#07111f] p-4">
-              <h3 className="text-sm font-semibold text-white">Request Summary</h3>
-              <p className="mt-1 text-xs text-gray-500">Please review your information.</p>
+              <h3 className="text-sm font-semibold text-white">
+                Request Summary
+              </h3>
+              <p className="mt-1 text-xs text-gray-500">
+                Please review your information.
+              </p>
               <div className="mt-5 space-y-4 text-xs">
                 <div>
                   <p className="mb-1 text-gray-500">Category</p>
-                  <Badge variant="secondary" className="text-[10px]">{selectedType.label}</Badge>
+                  <Badge variant="secondary" className="text-[10px]">
+                    {selectedType.label}
+                  </Badge>
                 </div>
                 <div>
                   <p className="mb-1 text-gray-500">Subject</p>
@@ -912,21 +1064,37 @@ function ContactSupportView({
                     </SelectTrigger>
                     <SelectContent>
                       {PRIORITY_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <p className="mb-1 text-gray-500">Description</p>
-                  <p className="text-gray-200">{description || "Not provided"}</p>
+                  <p className="text-gray-200">
+                    {description || "Not provided"}
+                  </p>
                 </div>
               </div>
               <div className="mt-5 border-t border-[#1e2d40] pt-4">
-                <p className="mb-3 text-xs font-semibold text-gray-200">What happens next?</p>
-                <TimelineItem title="Your request will be sent to our system administrators." time="" active />
-                <TimelineItem title="We typically respond within 1-4 hours during business hours." time="" />
-                <TimelineItem title="You can track updates in My Requests." time="" />
+                <p className="mb-3 text-xs font-semibold text-gray-200">
+                  What happens next?
+                </p>
+                <TimelineItem
+                  title="Your request will be sent to our system administrators."
+                  time=""
+                  active
+                />
+                <TimelineItem
+                  title="We typically respond within 1-4 hours during business hours."
+                  time=""
+                />
+                <TimelineItem
+                  title="You can track updates in My Requests."
+                  time=""
+                />
               </div>
             </div>
           </div>
@@ -940,8 +1108,13 @@ function ContactSupportView({
               <Lock className="h-5 w-5 text-blue-300" />
             </span>
             <div>
-              <p className="text-sm font-semibold text-white">Your data is secure</p>
-              <p className="mt-1 text-xs text-gray-500">All requests are encrypted and only visible to authorized system administrators.</p>
+              <p className="text-sm font-semibold text-white">
+                Your data is secure
+              </p>
+              <p className="mt-1 text-xs text-gray-500">
+                All requests are encrypted and only visible to authorized system
+                administrators.
+              </p>
             </div>
           </div>
           <Button variant="outline">
@@ -995,12 +1168,22 @@ function KoraAssistantPanel({
           <MoreHorizontal className="h-4 w-4 text-gray-500" />
         </div>
         <div className="mb-5 flex items-center gap-4">
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border border-cyan-400 bg-cyan-500/10 shadow-[0_0_28px_rgba(34,211,238,0.35)]">
-            <Bot className="h-10 w-10 text-cyan-300" />
+          <div className="hidden w-40 shrink-0 items-center justify-center sm:flex">
+            <Image
+              src="/kora.png"
+              alt="Kora"
+              width={60}
+              height={60}
+              unoptimized
+              priority
+              className="kora-image h-20 w-20 object-contain"
+            />
           </div>
           <div className="rounded-lg border border-[#1e2d40] bg-[#0d1a2d] p-3 text-sm text-gray-200">
             <p>Hi Alex! 👋</p>
-            <p className="mt-1 text-gray-300">I&apos;m here to help you solve issues and get things done.</p>
+            <p className="mt-1 text-gray-300">
+              I&apos;m here to help you solve issues and get things done.
+            </p>
           </div>
         </div>
         <div className="space-y-2">
@@ -1009,13 +1192,20 @@ function KoraAssistantPanel({
               key={title}
               type="button"
               onClick={() => {
-                if (title.includes("request") || title.includes("support")) setView("contact");
+                if (title.includes("request") || title.includes("support"))
+                  setView("contact");
               }}
               className="flex w-full items-center justify-between gap-3 rounded-lg border border-[#1e2d40] bg-[#0d1a2d] px-3 py-3 text-left hover:bg-[#12213a]"
             >
               <span className="min-w-0">
-                <span className="block truncate text-sm text-gray-200">{title}</span>
-                {sub ? <span className="block truncate text-xs text-gray-500">{sub}</span> : null}
+                <span className="block truncate text-sm text-gray-200">
+                  {title}
+                </span>
+                {sub ? (
+                  <span className="block truncate text-xs text-gray-500">
+                    {sub}
+                  </span>
+                ) : null}
               </span>
               <ChevronRight className="h-4 w-4 text-gray-500" />
             </button>
@@ -1026,8 +1216,12 @@ function KoraAssistantPanel({
             I can help with that. Would you like me to start a guided workflow?
           </p>
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <Button size="sm" onClick={() => setView("contact")}>Start workflow</Button>
-            <Button size="sm" variant="outline">Contact support</Button>
+            <Button size="sm" onClick={() => setView("contact")}>
+              Start workflow
+            </Button>
+            <Button size="sm" variant="outline">
+              Contact support
+            </Button>
           </div>
         </div>
         <div className="mt-4 flex gap-2">
@@ -1041,7 +1235,13 @@ function KoraAssistantPanel({
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+function Row({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex items-center justify-between gap-3">
       <span className="text-gray-500">{label}</span>
@@ -1050,10 +1250,20 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function TimelineItem({ title, time, active }: { title: string; time?: string; active?: boolean }) {
+function TimelineItem({
+  title,
+  time,
+  active,
+}: {
+  title: string;
+  time?: string;
+  active?: boolean;
+}) {
   return (
     <div className="flex gap-3 pb-3 last:pb-0">
-      <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${active ? "bg-blue-400" : "bg-gray-500"}`} />
+      <span
+        className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${active ? "bg-blue-400" : "bg-gray-500"}`}
+      />
       <div className="min-w-0 flex-1">
         <p className="text-xs text-gray-200">{title}</p>
       </div>
