@@ -92,6 +92,14 @@ export const activityApi = {
   getStats: () => api.get("/activity/stats"),
 };
 
+export const workflowApi = {
+  getAll: (params?: object) => api.get("/workflows", { params }),
+  getHistory: (params?: object) => api.get("/workflows/history", { params }),
+  getStats: () => api.get("/workflows/stats"),
+  create: (data: object) => api.post("/workflows", data),
+  update: (id: string, data: object) => api.put(`/workflows/${id}`, data),
+};
+
 export const servicesApi = {
   getAll: (params?: object) => api.get("/services", { params }),
   getById: (id: string) => api.get(`/services/${id}`),

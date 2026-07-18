@@ -520,7 +520,7 @@ export default function PartnerDashboardPage() {
         </Card>
 
         {/* Kora suggestions */}
-        <Card className="dashboard-secondary">
+        {/* <Card className="dashboard-secondary">
           <CardContent className="pt-5">
             <div className="mb-3 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-blue-400" />
@@ -549,7 +549,7 @@ export default function PartnerDashboardPage() {
               ))}
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );
